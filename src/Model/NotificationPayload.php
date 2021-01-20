@@ -14,7 +14,7 @@ class NotificationPayload
     private $cancellationDateMs;
     private $webOrderLineItemId;
     private $latestReceipt;
-    private $latestReceiptInfo;
+    private $latestReceiptInfo = [];
     private $latestExpiredReceipt;
     private $latestExpiredReceiptInfo;
     private $autoRenewStatus;
@@ -38,8 +38,10 @@ class NotificationPayload
         $instance->cancellationDatePst = $request->input('cancellation_date_pst');
         $instance->cancellationDateMs = $request->input('cancellation_date_ms');
         $instance->webOrderLineItemId = $request->input('web_order_line_item_id');
-        $instance->latestReceipt = $request->input('latest_receipt');
-        $instance->latestReceiptInfo = Receipt::createFromArray($request->input('latest_receipt_info'));
+        $instance->latestReceipt = $request->input('unified_receipt.latest_receipt');
+        foreach ($request->input('unified_receipt.latest_receipt_info') as $receipt_info) {
+            $instance->latestReceiptInfo[] = Receipt::createFromArray($receipt_info);
+        }
         $instance->latestExpiredReceipt = $request->input('latest_expired_receipt');
         if ($request->has('latest_expired_receipt_info')) {
             $instance->latestExpiredReceiptInfo = Receipt::createFromArray($request->input('latest_expired_receipt_info'));
